@@ -30,18 +30,17 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
 
+    # - name: Publish Project
+    #   run: dotnet publish SampleCoreWebAPI.csproj --configuration Release --output ./publish
+
     - name: Publish Project
-      run: dotnet publish SampleCoreWebAPI.csproj --configuration Release --output ./publish
-
-    - name: Check msdeploy exists
       run: |
-        where msdeploy || echo "msdeploy not found"
+        dotnet publish ./SampleCoreWebAPI.csproj --configuration Release --output ./publish
 
-    - name: IIS Deploy
-      uses: ChristopheLav/iis-deploy@v1.0.0
-      with:
-        website-name: 'githubworkflow'   # Your IIS site name
-        msdeploy-service-url: 'https://192.168.1.84:8172/msdeploy.axd'
-        msdeploy-username: 'administrator'
-        msdeploy-password: ${{ secrets.MSDEPLOY_PASSWORD }}
-        source-path: './publish'
+    - name: List publish output
+      run: |
+        dir ./publish
+
+    - name: Deploy to IIS
+      run: |
+        msdeploy -verb:sync -source:contentPath="$(System.DefaultWorkingDirectory)/publish" -dest:auto,ComputerName="https://192.168.1.84:8172/msdeploy.axd?site=githubworkflow",UserName="administrator",Password="${{ secrets.MSDEPLOY_PASSWORD }}",AuthType="Basic" -allowUntrusted
