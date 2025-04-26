@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: self-hosted  # Make sure your self-hosted runner has this label
+    runs-on: windows-latest
 
     steps:
     - name: Checkout Code
