@@ -18,6 +18,18 @@ jobs:
       with:
         dotnet-version: '8.0.x'  # or 7.0.x, depending on your project version
 
+    - name: Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+
+    - name: Restore dependencies
+      run: dotnet restore
+
     - name: Publish Project
       run: dotnet publish SampleCoreWebAPI.csproj --configuration Release --output ./publish
 
