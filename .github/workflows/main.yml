@@ -21,6 +21,10 @@ jobs:
     - name: Publish Project
       run: dotnet publish SampleCoreWebAPI.csproj --configuration Release --output ./publish
 
+    - name: Check msdeploy exists
+      run: |
+        where msdeploy || echo "msdeploy not found"
+
     - name: IIS Deploy
       uses: ChristopheLav/iis-deploy@v1.0.0
       with:
