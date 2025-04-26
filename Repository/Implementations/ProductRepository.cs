@@ -15,7 +15,7 @@ public class ProductRepository : IProductRepository
         {
             return new ResponseModel<UserModel>() 
             {
-                Result = new UserModel()
+                Result = new UserModel() 
                 {
                     UserName = "Mathan Test User",
                     UserId = 123,
