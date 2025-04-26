@@ -42,5 +42,6 @@ jobs:
         dir ./publish
     
     - name: Deploy to IIS
+      shell: cmd
       run: |
-        "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" -verb:sync -source:contentPath="./publish" -dest:auto,ComputerName="https://192.168.1.84:8172/msdeploy.axd?site=githubworkflow",UserName="administrator",Password="${{ secrets.MSDEPLOY_PASSWORD }}",AuthType="Basic" -allowUntrusted
+        "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" -verb:sync -source:contentPath="publish" -dest:auto,ComputerName="https://192.168.1.84:8172/msdeploy.axd?site=githubworkflow",UserName="administrator",Password="${{ secrets.MSDEPLOY_PASSWORD }}",AuthType="Basic" -allowUntrusted
