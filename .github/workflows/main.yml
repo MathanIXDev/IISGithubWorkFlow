@@ -19,7 +19,7 @@ jobs:
         dotnet-version: '8.0.x'  # or 7.0.x, depending on your project version
 
     - name: Publish Project
-      run: dotnet publish YourProject.csproj --configuration Release --output ./publish
+      run: dotnet publish SampleCoreWebAPI.csproj --configuration Release --output ./publish
 
     - name: IIS Deploy
       uses: ChristopheLav/iis-deploy@v1.0.0
