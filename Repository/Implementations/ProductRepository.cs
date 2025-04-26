@@ -13,7 +13,7 @@ public class ProductRepository : IProductRepository
     {
         try
         {
-            return new ResponseModel<UserModel>()
+            return new ResponseModel<UserModel>() 
             {
                 Result = new UserModel()
                 {
