@@ -40,7 +40,7 @@ jobs:
     - name: IIS Deploy
       uses: ChristopheLav/iis-deploy@v1.0.0
       with:
-        website-name: 'githubWorkFlow'   # Your IIS site name
+        website-name: 'githubworkflow'   # Your IIS site name
         msdeploy-service-url: 'https://192.168.1.84:8172/msdeploy.axd'
         msdeploy-username: 'administrator'
         msdeploy-password: ${{ secrets.MSDEPLOY_PASSWORD }}
