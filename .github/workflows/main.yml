@@ -43,4 +43,4 @@ jobs:
 
     - name: Deploy to IIS
       run: |
-        msdeploy -verb:sync -source:contentPath="$(System.DefaultWorkingDirectory)/publish" -dest:auto,ComputerName="https://192.168.1.84:8172/msdeploy.axd?site=githubworkflow",UserName="administrator",Password="${{ secrets.MSDEPLOY_PASSWORD }}",AuthType="Basic" -allowUntrusted
+        msdeploy -verb:sync -source:contentPath="./publish" -dest:auto,ComputerName="https://192.168.1.84:8172/msdeploy.axd?site=githubworkflow",UserName="administrator",Password="${{ secrets.MSDEPLOY_PASSWORD }}",AuthType="Basic" -allowUntrusted
