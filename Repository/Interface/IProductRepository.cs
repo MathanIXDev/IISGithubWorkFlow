@@ -1,4 +1,4 @@
 public interface IProductRepository
 {
-    ResponseModel<UserModel> GetUserByID(int UserID);
+    ResponseModel<UserModel> GetUserByID(int UserID); 
 }
