@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: windows-latest
+    runs-on: self-hosted  # Make sure your self-hosted runner has this label
 
     steps:
     - name: Checkout Code
@@ -35,13 +35,13 @@ jobs:
 
     - name: Publish Project
       run: |
-        dotnet publish ./SampleCoreWebAPI.csproj --configuration Release --output ./publish
-    
+        dotnet publish ./SampleCoreWebAPI.csproj --configuration Release --output C:\publish
+
     - name: List publish output
       run: |
-        dir ./publish
-    
+        dir C:\publish
+
     - name: Deploy to IIS
       shell: cmd
       run: |
-        "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" -verb:sync -source:contentPath="D:\a\IISGithubWorkFlow\IISGithubWorkFlow\publish" -dest:auto,ComputerName="https://192.168.1.84:8172/msdeploy.axd?site=githubworkflow",UserName="administrator",Password="${{ secrets.MSDEPLOY_PASSWORD }}",AuthType="Basic" -allowUntrusted
+        "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" -verb:sync -source:contentPath="C:\publish" -dest:auto,ComputerName="https://192.168.1.84:8172/msdeploy.axd?site=githubworkflow",UserName="administrator",Password="${{ secrets.MSDEPLOY_PASSWORD }}",AuthType="Basic" -allowUntrusted
