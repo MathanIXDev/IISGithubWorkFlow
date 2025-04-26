@@ -1,0 +1,33 @@
+name: Deploy to Remote IIS Server
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Build .NET project
+      run: |
+        dotnet restore
+        dotnet build --configuration Release
+        dotnet publish --configuration Release -o publish_output
+
+    - name: Deploy using WinRM
+      uses: appleboy/ssh-action@v0.1.6
+      with:
+        host: ${{ secrets.WINRM_HOST }}
+        username: ${{ secrets.WINRM_USERNAME }}
+        password: ${{ secrets.WINRM_PASSWORD }}
+        port: 5986  # WinRM HTTPS port (secure)
+        script: |
+          Stop-Website -Name "YourSiteName"
+          Remove-Item -Path "C:\inetpub\wwwroot\YourSiteName\*" -Recurse -Force
+          Copy-Item -Path "C:\GitHubRunner\actions-runner\_work\yourrepo\yourrepo\publish_output\*" -Destination "C:\inetpub\wwwroot\YourSiteName" -Recurse
+          Start-Website -Name "YourSiteName"
