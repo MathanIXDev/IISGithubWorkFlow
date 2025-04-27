@@ -1,47 +1,80 @@
-name: Deploy .NET App to IIS Server
+# name: Deploy .NET App to IIS Server
+
+# on:
+#   push:
+#     branches:
+#       - main    # whenever you push to main branch
+
+# jobs:
+#   deploy:
+#     runs-on: windows-latest
+
+#     steps:
+#     - name: Checkout Code
+#       uses: actions/checkout@v4
+
+#     - name: Setup .NET
+#       uses: actions/setup-dotnet@v4
+#       with:
+#         dotnet-version: '8.0.x'  # or 7.0.x, depending on your project version
+
+#     - name: Cache NuGet packages
+#       uses: actions/cache@v4
+#       with:
+#         path: |
+#           ~/.nuget/packages
+#         key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+#         restore-keys: |
+#           ${{ runner.os }}-nuget-
+
+#     - name: Restore dependencies
+#       run: dotnet restore
+
+#     # - name: Publish Project
+#     #   run: dotnet publish SampleCoreWebAPI.csproj --configuration Release --output ./publish
+
+#     - name: Publish Project
+#       run: |
+#         dotnet publish ./SampleCoreWebAPI.csproj --configuration Release --output C:\publish
+
+#     - name: List publish output
+#       run: |
+#         dir C:\publish
+
+#     - name: Deploy to IIS
+#       shell: cmd
+#       run: |
+#         "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" -verb:sync -source:contentPath="C:\publish" -dest:auto,ComputerName="https://192.168.1.84:8172/msdeploy.axd?site=githubworkflow",UserName="administrator",Password="${{ secrets.MSDEPLOY_PASSWORD }}",AuthType="Basic" -allowUntrusted
+
+
+name: Deploy to Mac
 
 on:
   push:
-    branches:
-      - main    # whenever you push to main branch
+    branches: [ main ]
 
 jobs:
   deploy:
-    runs-on: windows-latest
-
+    runs-on: self-hosted  # This will target your Mac runner
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '8.0.x'  # or 7.0.x, depending on your project version
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
 
-    - name: Cache NuGet packages
-      uses: actions/cache@v4
-      with:
-        path: |
-          ~/.nuget/packages
-        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
-        restore-keys: |
-          ${{ runner.os }}-nuget-
+      - name: Restore Dependencies
+        run: dotnet restore
 
-    - name: Restore dependencies
-      run: dotnet restore
+      - name: Build Project
+        run: dotnet build --configuration Release
 
-    # - name: Publish Project
-    #   run: dotnet publish SampleCoreWebAPI.csproj --configuration Release --output ./publish
+      - name: Publish Project
+        run: dotnet publish -c Release -o ./publish
 
-    - name: Publish Project
-      run: |
-        dotnet publish ./SampleCoreWebAPI.csproj --configuration Release --output C:\publish
-
-    - name: List publish output
-      run: |
-        dir C:\publish
-
-    - name: Deploy to IIS
-      shell: cmd
-      run: |
-        "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" -verb:sync -source:contentPath="C:\publish" -dest:auto,ComputerName="https://192.168.1.84:8172/msdeploy.axd?site=githubworkflow",UserName="administrator",Password="${{ secrets.MSDEPLOY_PASSWORD }}",AuthType="Basic" -allowUntrusted
+      - name: Run the App
+        run: |
+          pkill dotnet || true  # stop any running instance
+          nohup dotnet ./publish/YOUR_PROJECT.dll > log.txt 2>&1 &
